@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:assault/helpers/DbHelper.dart';
 import 'package:assault/models/complaint_model.dart';
 import 'package:assault/providers/complaint_provider.dart';
+import 'package:assault/ui/app/complaint/add_complaint_screen_two.dart';
 import 'package:assault/ui/core/alert.dart';
 import 'package:assault/ui/core/custom_appbar.dart';
 import 'package:assault/ui/core/dialogs.dart';
@@ -61,7 +61,17 @@ class _AddComplaintScreenState extends State<AddComplaintScreen> {
 
   submit() async {
     String facial = "Yes";
-    //   String date = "0000";
+    // _nameController.text = 'test test';
+    // _tattoDescriptionController.text = 'very bad';
+    // _heightController.text = '12';
+    // _ageController.text = '21';
+    // _eyeController.text = 'white';
+    // _skinController.text = 'black';
+    // _genderController.text = 'male';
+    // _ethnicityController.text = 'Cool';
+    // _hairController.text = 'black';
+    // _dateController.text = 'Jan 20,2022';
+
     String name = _nameController.text;
     String tdes = _tattoDescriptionController.text;
     String heightt = _heightController.text;
@@ -92,36 +102,54 @@ class _AddComplaintScreenState extends State<AddComplaintScreen> {
       } else {
         _formKey.currentState.save();
 
-        ComplaintModel uModel = ComplaintModel(
-          name,
-          tdes,
-          age,
-          eye,
-          skin,
-          gen,
-          facial,
-          eth,
-          hair,
-          heightt,
-          ondate,
+        // ComplaintModel uModel = ComplaintModel(
+        //   name,
+        //   tdes,
+        //   age,
+        //   eye,
+        //   skin,
+        //   gen,
+        //   facial,
+        //   eth,
+        //   hair,
+        //   heightt,
+        //   ondate,
+        // );
+        // await dbHelper.saveDatatoCrime(uModel).then((userData) {
+        //   Dialogs.showLoadingDialog(context, key: _dialogKey);
+        //
+        //   Timer(Duration(seconds: 2), () {
+        //     Navigator.of(context).pop();
+        //     alertDialog(context, "Successfully Saved");
+        //     Navigator.pushNamed(context, AssaultPages.addcomplaintwo);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddComplaintScreenTwo(
+              fullName: name,
+              tattooDescription: tdes,
+              ageApprox: age,
+              eyeColor: eye,
+              skinColor: skin,
+              gender: gen,
+              facialHair: facial,
+              ethnicity: eth,
+              hairColor: hair,
+              height: heightt,
+              date: ondate,
+            ),
+          ),
         );
-        await dbHelper.saveDatatoCrime(uModel).then((userData) {
-          Dialogs.showLoadingDialog(context, key: _dialogKey);
-
-          Timer(Duration(seconds: 2), () {
-            Navigator.of(context).pop();
-            alertDialog(context, "Successfully Saved");
-            Navigator.pushNamed(context, AssaultPages.addcomplaintwo);
-          });
-        }).catchError((error) {
-          print(error);
-          Dialogs.showLoadingDialog(context, key: _dialogKey);
-
-          Timer(Duration(seconds: 2), () {
-            Navigator.of(context).pop();
-            alertDialog(context, "Opps");
-          });
-        });
+        //   });
+        // }).catchError((error) {
+        //   print(error);
+        //   Dialogs.showLoadingDialog(context, key: _dialogKey);
+        //
+        //   Timer(Duration(seconds: 2), () {
+        //     Navigator.of(context).pop();
+        //     alertDialog(context, "Opps");
+        //   });
+        // });
       }
     }
   }

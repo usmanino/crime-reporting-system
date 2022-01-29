@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:assault/helpers/DbHelper.dart';
 import 'package:assault/models/complaint_model.dart';
 import 'package:assault/providers/complaint_provider.dart';
@@ -18,8 +17,20 @@ import 'package:provider/provider.dart';
 
 class AddComplaintScreenTwo extends StatefulWidget {
   final ComplaintModel complaintModel;
-  AddComplaintScreenTwo({this.complaintModel});
-
+  final String fullName;
+  final String gender;
+  final String skinColor;
+  final String ageApprox;
+  final String height;
+  final String eyeColor;
+  final String date;
+  final String ethnicity;
+  final String hairColor;
+  final String tattooDescription;
+  final String facialHair;
+  // AddComplaintScreenTwo({this.complaintModel});
+  const AddComplaintScreenTwo({Key key, this.complaintModel, this.fullName, this.gender, this.skinColor, this.ageApprox,
+  this.height, this.eyeColor, this.date, this.ethnicity, this.hairColor, this.tattooDescription, this.facialHair}) : super(key: key);
   @override
   _AddComplaintScreenTwoState createState() => _AddComplaintScreenTwoState();
 }
@@ -34,7 +45,7 @@ class _AddComplaintScreenTwoState extends State<AddComplaintScreenTwo> {
   final _dialogKey = new GlobalKey<State>();
 
   bool _serviceEnabled;
-  var dbHelper;
+  var dbHelper = DbHelper();
 
   @override
   void initState() {
@@ -43,6 +54,11 @@ class _AddComplaintScreenTwoState extends State<AddComplaintScreenTwo> {
   }
 
   submit() async {
+    // _townController.text = 'oyun';
+    // _cityController.text = 'ilorin';
+    // _stateController.text = 'kwara';
+    // _descriptionController.text = 'Thanks for your offer what sup';
+
     String town = _townController.text;
     String city = _cityController.text;
     String state = _stateController.text;
@@ -59,26 +75,66 @@ class _AddComplaintScreenTwoState extends State<AddComplaintScreenTwo> {
       } else {
         _formKey.currentState.save();
 
-        ComplaintModelL uModel = ComplaintModelL(
-            town: town, city: city, state: state, description: des);
-        await dbHelper.insertComplainttwo(uModel).then((userData) {
+        ComplaintModel uModel = ComplaintModel(
+          fullName: widget.fullName,
+          gender: widget.gender,
+          skinColor: widget.skinColor,
+          ageApprox: widget.ageApprox,
+          height: widget.height,
+          eyeColor: widget.eyeColor,
+          date: widget.date,
+          ethnicity: widget.ethnicity,
+          facialHair: widget.facialHair,
+          hairColor: widget.hairColor,
+          tattooDescription: widget.tattooDescription,
+          town: town,
+          city: city,
+          state: state,
+          description: des,
+        );
+
+        await dbHelper.saveDatatoCrime(uModel).then((value) {
           Dialogs.showLoadingDialog(context, key: _dialogKey);
 
-          Timer(Duration(seconds: 2), () {
-            Navigator.of(context).pop();
-            alertDialog(context, "Successfully Saved");
-            // Navigator.pushNamed(context, AssaultPages.login);
-          });
-        }).catchError((error) {
-          print(error);
-          Dialogs.showLoadingDialog(context, key: _dialogKey);
+            Timer(Duration(seconds: 2), () {
+              Navigator.of(context).pop();
+              alertDialog(context, "Successfully Saved");
+              print(dbHelper.getUserComplaint());
+              Navigator.pushNamed(context, AssaultPages.home);
+            });
+          }).catchError((error) {
+            print(error);
+            Dialogs.showLoadingDialog(context, key: _dialogKey);
 
-          Timer(Duration(seconds: 2), () {
-            Navigator.of(context).pop();
-            alertDialog(context, "Complaint Logged Successfully");
-            Navigator.pushReplacementNamed(context, AssaultPages.home);
-          });
+            Timer(Duration(seconds: 2), () {
+              Navigator.of(context).pop();
+              alertDialog(context, "Complaint Logged Successfully");
+              Navigator.pushReplacementNamed(context, AssaultPages.home);
+            });
         });
+
+        // ComplaintModelL uModel = ComplaintModelL(
+        //     town: town, city: city, state: state, description: des,
+        // );
+        // await dbHelper.in
+        // await dbHelper.insertComplainttwo(uModel).then((userData) {
+        //   Dialogs.showLoadingDialog(context, key: _dialogKey);
+        //
+        //   Timer(Duration(seconds: 2), () {
+        //     Navigator.of(context).pop();
+        //     alertDialog(context, "Successfully Saved");
+        //     Navigator.pushNamed(context, AssaultPages.home);
+        //   });
+        // }).catchError((error) {
+        //   print(error);
+        //   Dialogs.showLoadingDialog(context, key: _dialogKey);
+        //
+        //   Timer(Duration(seconds: 2), () {
+        //     Navigator.of(context).pop();
+        //     alertDialog(context, "Complaint Logged Successfully");
+        //     Navigator.pushReplacementNamed(context, AssaultPages.home);
+        //   });
+        // });
       }
     }
   }

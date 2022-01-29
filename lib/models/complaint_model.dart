@@ -10,8 +10,13 @@ class ComplaintModel {
   String hairColor;
   String tattooDescription;
   String facialHair;
+  String town;
+  String city;
+  String state;
+  String description;
 
-  ComplaintModel(
+  ComplaintModel({
+
     this.fullName,
     this.gender,
     this.skinColor,
@@ -23,21 +28,29 @@ class ComplaintModel {
     this.facialHair,
     this.hairColor,
     this.tattooDescription,
-  );
+    this.town,
+    this.city,
+    this.state,
+    this.description,
+  });
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'full_name': fullName,
       'gender': gender,
-      'skin': skinColor,
+      'skin_color': skinColor,
       'age': ageApprox,
       'height': height,
-      'eye': eyeColor,
+      'eye_colour': eyeColor,
       'date': date,
-      'eth': ethnicity,
+      'ethnicity': ethnicity,
       'facial_hair': facialHair,
       'hair_color': hairColor,
       'tattoo_description': tattooDescription,
+      'town': town,
+      'city': city,
+      'state': state,
+      'description': description,
     };
     return map;
   }
@@ -45,15 +58,19 @@ class ComplaintModel {
   ComplaintModel.fromMap(Map<String, dynamic> map) {
     fullName = map['full_name'];
     gender = map['gender'];
-    skinColor = map['skin'];
+    skinColor = map['skin_color'];
     ageApprox = map['age'];
     height = map['height'];
-    eyeColor = map['eye'];
+    eyeColor = map['eye_colour'];
     date = map['date'];
-    ethnicity = map['eth'];
+    ethnicity = map['ethnicity'];
     facialHair = map['facial_hair'];
     hairColor = map['hair_color'];
     tattooDescription = map['tattoo_description'];
+    town = map['town'];
+    city = map['city'];
+    state = map['state'];
+    description = map['description'];
   }
 }
 

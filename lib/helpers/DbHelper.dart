@@ -17,8 +17,7 @@ class DbHelper {
   static const String C_Email = 'email';
   static const String C_Password = 'password';
 
-  //////////////////////////////
-  ///
+  // Crime Table
   static const String Table_Crime = 'crime';
   static const String C_Id = 'id';
   static const String C_FullName = 'full_name';
@@ -33,7 +32,8 @@ class DbHelper {
   static const String C_TattooDescription = 'tattoo_Description';
   static const String C_FacialHair = 'facial_Hair';
 
-  static const String crime_Table_Two = 'crime_table_two';
+  // Crime location Table
+  static const String Crime_Table_Two = 'crime_table_two';
   static const String C_Description = 'description';
   static const String C_Town = 'town';
   static const String C_city = 'city';
@@ -60,43 +60,50 @@ class DbHelper {
   }
 
   _onCreate(Database db, int intVersion) async {
-    await db.execute("CREATE TABLE $Table_User ("
-        " $C_UserID TEXT, "
-        " $C_UserName TEXT, "
-        " $C_Email TEXT,"
-        " $C_Password TEXT, "
-        " PRIMARY KEY ($C_UserID)"
-        ")");
 
-    await db.execute("CREATE TABLE $Table_Crime ("
-        "$C_Id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        " $C_FullName TEXT, "
-        " $C_Gender TEXT, "
-        " $C_Height TEXT,"
-        " $C_Age TEXT, "
-        " $C_Date TEXT, "
-        " $C_EyeColor TEXT, "
-        " $C_Ethnicity TEXT, "
-        " $C_HairColor TEXT, "
-        " $C_SkinColor TEXT, "
-        " $C_TattooDescription TEXT, "
-        " $C_FacialHair TEXT, "
-        ")");
+    // await db.execute("CREATE TABLE $Table_User ("
+    //     " $C_UserID TEXT, "
+    //     " $C_UserName TEXT, "
+    //     " $C_Email TEXT,"
+    //     " $C_Password TEXT, "
+    //     " PRIMARY KEY ($C_UserID)"
+    //     ")");
+
+    await db.execute(
+        'CREATE TABLE $Table_User ($C_UserID TEXT,$C_UserName TEXT,$C_Email TEXT,$C_Password TEXT, PRIMARY KEY ($C_UserID))'
+    );
+
+    await db.execute(
+        'CREATE TABLE $Table_Crime ($C_Id INTEGER PRIMARY KEY AUTOINCREMENT, $C_FullName TEXT, $C_Gender TEXT, $C_Height TEXT, $C_Age TEXT, $C_Date TEXT, $C_EyeColor TEXT, $C_Ethnicity, $C_HairColor TEXT, $C_SkinColor TEXT, $C_TattooDescription TEXT, $C_FacialHair TEXT, $C_Town TEXT, $C_state TEXT, $C_city TEXT, $C_Description)'
+    );
+
+    // await db.execute(
+    //     'CREATE TABLE $Crime_Table_Two ($C_Town TEXT, $C_state TEXT, $C_city TEXT, $C_Description)'
+    // );
   }
 
+  // insert in to user Table
   Future<int> saveData(UserModel user) async {
     var dbClient = await db;
     var res = await dbClient.insert(Table_User, user.toMap());
     return res;
   }
-  // insert in to crime table
 
+  // insert in to crime table
   Future<void> saveDatatoCrime(ComplaintModel user) async {
     var dbClient = await db;
     var res = await dbClient.insert(Table_Crime, user.toMap());
     return res;
   }
 
+  // insert in to crime location table
+  Future<void> insertComplainttwo(ComplaintModelL complaint2) async {
+    var dbl = await this.db;
+    var res = await dbl.insert(Crime_Table_Two, complaint2.toMap());
+    return res;
+  }
+
+  // user login validation
   Future<UserModel> getLoginUser(String email, String password) async {
     var dbClient = await db;
     var res = await dbClient.rawQuery("SELECT * FROM $Table_User WHERE "
@@ -106,20 +113,43 @@ class DbHelper {
     if (res.length > 0) {
       return UserModel.fromMap(res.first);
     }
-
     return null;
   }
 
-  Future<int> updateUser(UserModel user) async {
+  //view user complaint
+  Future<List> getUserComplaint() async {
     var dbClient = await db;
-    var res = await dbClient.update(Table_User, user.toMap(),
-        where: '$C_UserID = ?', whereArgs: [user.user_id]);
-    return res;
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $Table_Crime');
+    if(list.length > 0) {
+      // print('--------- $Table_Crime --------------');
+      // print(list);
+      return list;
+    }
+    return null;
   }
+
+  Future<List> getUserComplaintTwo(String id) async {
+    var dbClient = await db;
+    var res = await dbClient.rawQuery('SELECT * FROM $Table_Crime WHERE id = $id');
+    if(res.length > 0) {
+      print('--------- $Table_Crime --------------');
+      print(res);
+      return res;
+    }
+    return null;
+  }
+
+
+  // Future<int> updateUser(UserModel user) async {
+  //   var dbClient = await db;
+  //   var res = await dbClient.update(Table_User, user.toMap(),
+  //       where: '$C_UserID = ?', whereArgs: [user.user_id]);
+  //   return res;
+  // }
 
   // Future<List<Map<String, dynamic>>> getMapComplaintList() async {
   //   Database db = await this.db;
-  //   final List<Map<String, dynamic>> result = await db.query(crime_Table);
+  //   final List<Map<String, dynamic>> result = await db.query('CREATE TABLE $Table_Crime ($C_Id INTEGER PRIMARY KEY AUTOINCREMENT, $C_FullName TEXT, $C_Gender TEXT, $C_Height TEXT, $C_Age TEXT, $C_Date TEXT, $C_EyeColor TEXT, $C_Ethnicity, $C_HairColor TEXT, $C_SkinColor TEXT, $C_TattooDescription TEXT, $C_FacialHair TEXT)');
   //   return result;
   // }
 
@@ -138,13 +168,13 @@ class DbHelper {
 
   // void _createComplainttwo(Database dbl, int version) async {
   //   await dbl.execute(
-  //     "CREATE TABLE $crime_Table_Two ($C_Description TEXT,$C_Town TEXT,$C_state TEXT,$C_city TEXT,),",
+  //     "CREATE TABLE $Crime_Table_Two ($C_Description TEXT,$C_Town TEXT,$C_state TEXT,$C_city TEXT,),",
   //   );
   // }
 
   // Future<List<Map<String, dynamic>>> getMapComplaintListTwo() async {
-  //   Database dbl = await this.dbl;
-  //   final List<Map<String, dynamic>> result = await dbl.query(crime_Table_Two);
+  //   Database dbl = await this.db;
+  //   final List<Map<String, dynamic>> result = await dbl.query(Crime_Table_Two);
   //   return result;
   // }
 
@@ -159,17 +189,13 @@ class DbHelper {
   //   return complaintList;
   // }
 
-  // Future<int> insertComplainttwo(ComplaintModelL complaint2) async {
-  //   Database dbl = await this.dbl;
-  //   final int result = await dbl.insert(crime_Table_Two, complaint2.toMap());
-  //   return result;
-  // }
+
 
 //////////////////////////////
-  Future<int> deleteUser(String userId) async {
-    var dbClient = await db;
-    var res = await dbClient
-        .delete(Table_User, where: '$C_UserID = ?', whereArgs: [userId]);
-    return res;
-  }
+//   Future<int> deleteUser(String userId) async {
+//     var dbClient = await db;
+//     var res = await dbClient
+//         .delete(Table_User, where: '$C_UserID = ?', whereArgs: [userId]);
+//     return res;
+//   }
 }

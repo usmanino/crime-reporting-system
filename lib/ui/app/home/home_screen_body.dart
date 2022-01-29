@@ -51,7 +51,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   void initState() {
     super.initState();
     getUserData();
-
     dbHelper = DbHelper();
   }
 
@@ -81,6 +80,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     final complaintProvider =
         Provider.of<ComplaintProvider>(context, listen: false);
     final navigationProvider = Provider.of<NavigationProvider>(context);
+
+    List complainNumber = [dbHelper.getUserComplaint()];
 
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -162,14 +163,20 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    '${complaintProvider.numOfComplaint}',
-                    style: TextStyle(
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.bold,
-                      color: kWhiteColor,
-                    ),
-                  ),
+                  FutureBuilder(
+                  future: dbHelper.getUserComplaint(),
+                      builder: (context, snapshot){
+                    return  Text(
+                      // '${complaintProvider.numOfComplaint}',
+                      '${snapshot.data.length}',
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                        color: kWhiteColor,
+                      ),
+                    );
+                  }),
+
                   SizedBox(
                     height: SizeConfig.minBlockVertical,
                   ),
