@@ -168,7 +168,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                       builder: (context, snapshot){
                     return  Text(
                       // '${complaintProvider.numOfComplaint}',
-                      '${snapshot.data.length}',
+                      '${snapshot.data.length}' ?? '0',
                       style: TextStyle(
                         fontSize: 30.0,
                         fontWeight: FontWeight.bold,
@@ -176,7 +176,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                       ),
                     );
                   }),
-
+              
                   SizedBox(
                     height: SizeConfig.minBlockVertical,
                   ),
